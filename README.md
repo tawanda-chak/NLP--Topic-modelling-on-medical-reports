@@ -37,7 +37,7 @@ Finally, we discuss the findings and provide a brief future course of action.
 
 *topic_modelling_medical-reports.Rmd*
 
-*topic_modelling_medical-reports.html*
+*topic_modelling_medical-reports.pdf*
 
 ### Model output
 *beta_probabilities.csv*
