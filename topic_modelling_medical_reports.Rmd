@@ -1,0 +1,457 @@
+---
+title: "Introduction to Topic Modelling on medical reports"
+author: "Tawanda Gallan Chakuvinga"
+date: "2026-03-21"
+output: bookdown::html_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction
+This work aims to provide an introductory concept of Topic modelling a branch of Natural Language Processing (NLP) in the medical field. Topic modelling also known as the unsupervised machine learning (UML) is a way of establishing trends, patterns in the text such that topics can be drawn from the textual data. We advance the mining of data in an under-researched field by means of exploring rich data (text) encountered in public health which may be readily accessible and analyzable by various stakeholders. 
+
+However, in this study, we will make use of AI generated medical health reports for very limited patients for the purposes of rolling out the introduction to topic modelling.
+
+### Study objectives
+Firstly, AI generation and compilation of structured and unstructured data (text) from case (medical) reports from a given time frame that can be incorporated into a text or csv file to handle diverse datasets and easily accessible for data and text analysis by epidemiologists, public health researchers, and biostatisticians with expertise in the concerned fields, data science, quantitative, and computational skills personnel. These files consist of six columns, for each patient (a row); the year, signs and symptoms, diagnosis, treatment, prognosis and follow-ups made.
+
+Secondly, to carry out Natural Language Processing (NLP) to perform topic modelling in order to observe the most prevalent signs and symptoms, diagnosis, treatment, prognosis and follow-ups in the health institution(s) of the given region. 
+
+
+## Text preprocessing
+We commence by loading our data compiled in the text file titled: <span style="color:blue">*patient_data.txt*</span> in R studio. A snapshot of the data is as seen in Figure \@ref(fig:snapshot).
+
+
+```{r}
+data<- read.delim("patient_data.txt", header = TRUE, sep = "\t", stringsAsFactors = FALSE, encoding = "UTF-8") 
+```
+
+``` r
+View(data)
+```
+
+```{r snapshot, echo=FALSE, fig.cap="Snapshot", out.width='100%', dpi=300}
+knitr::include_graphics("C:/Users/tchak/OneDrive/Documents/2026/R projects/screenshot1.png")
+```
+
+**Note**: The full text pre-processing code is covered in <span style="color:blue">*data_preprocessing.R*</span> and the data is in <span style="color:blue">*patient_data.txt*</span> and/ or <span style="color:blue">*patient_data.csv*</span>.
+
+Below is the summary of the data we are working with
+
+```{r data}
+summary(data)
+```
+
+### Packages
+For simplicity, we are going to focus on the "signs and symptoms" column for each patient (row). We are going to perform topic modelling only on this column. Let's start by loading necessary packages:
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+# install packages first 
+library(tm)
+library(topicmodels)
+library(LDAvis)
+library("stringr")
+library(knitr)
+library(kableExtra) 
+library(DT)
+library(tm)
+library(topicmodels)
+library(reshape2)
+library(ggplot2)
+library(wordcloud)
+library(pals)
+library(SnowballC)
+library(lda)
+library(ldatuning)
+library(flextable) 
+library(stringr)
+library(quanteda)
+library(textstem)
+library(stringr)
+library(dplyr)
+```
+
+To learn more, see [Available packages by name](https://cran.r-project.org/web/packages/available_packages_by_name.html) and [how to install R packages](https://cran.r-project.org/) on the application and installation of the packages.
+
+### The corpus
+In a text mining context, a corpus is plural of corpora which is a large, structured, and machine-readable collection of texts, audios or videos used for analysis.
+We move on to load our data into a corpus for the column Signs and Symptoms:
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+# Create a corpus from the documents
+corpus <- Corpus(VectorSource(data$Signs.and.Symptoms))
+```
+
+Now that we have the corpus, we start by pre-processing the textual data in order to remove what may result in noise terms as we model. Text pre-processing involves and is not limited to the following:
+
+-lowering all cases to lower cases as R is cursor sensitive which may analyse the same words differently since these may contain different cases,
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+corpus <- tm_map(corpus, content_transformer(tolower))
+```
+
+-removing all punctuation (full stops, commas, question marks, exclamation marks, colons, etc,), these are regarded as meaningless as they don’t assist in anyway in topic modeling,
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+corpus <- tm_map(corpus, removePunctuation)
+```
+
+-removing all English stop words, these entail question words (where, how, when, who, etc.), articles (the, a, an),
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+```
+
+-removing numbers, 
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+corpus <- tm_map(corpus, removeNumbers)
+```
+
+-tokenization, a process of separating words from sentences and paragraphs into individual bag of words, among other form of pre-processing
+
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+corpus <- tm_map(corpus, stripWhitespace)
+```
+
+We then move on to construct a document term matrix (dtm) of the corpus. This step is necessary for converting unstructured text into a structured, numerical format that can easily be processed by computers and useful for mathematical and statistical analysis.
+
+```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+dtm <- DocumentTermMatrix(corpus)
+```
+
+The dtm has 50 rows (patients) ad 41 different terms (signs and symptoms) chopped to individual words.
+
+```{r}
+dtm
+```
+
+#### Preprocessed data
+
+Consider the dtm comprising of pre-processed signs and symptoms for the first 5 patients in Figure \@ref(fig:screenshot2). 
+
+``` r
+inspect(dtm)
+```
+
+```{r screenshot2, echo=FALSE, fig.cap="First 5 patients", out.width='90%', dpi=300}
+knitr::include_graphics("C:/Users/tchak/OneDrive/Documents/2026/R projects/screenshot2.png")
+```
+
+We get to explore the (dtm) matrix for the first five patients and the frequency of the first five terms.
+
+```{r}
+# Convert DTM to a matrix of word frequencies
+# View the first 5 rows and 5 columns
+as.matrix(dtm[1:5, 1:5])
+```
+According to the dtm, patient (Docs) 2, had “low blood pressure" and "muscle cramps” as the signs and symptoms (Terms). Some terms are lumped up together deliberately, otherwise their meaning and purpose would be lost. For instance, if "lowbloodpressure" were to be tokenized to "blood", "pressure", "low", we wouldn't know whether the "low" is for pressure or temperature, the same goes for other terms. 
+
+We move on to convert our dtm to a matrix of frequency of words so that we are able to understand the frequencies of the signs and symptoms as presented below for the 9 most frequent signs and symptoms;
+
+```{r}
+# Convert DTM to a matrix of word frequencies
+word_freq <- colSums(as.matrix(dtm))
+# Sort the words by frequency
+sorted_word_freq <- sort(word_freq, decreasing = TRUE)
+# Plot the top 20 most frequent words
+n<-50
+top_words <- head(sorted_word_freq, n)
+#word_freq
+#sorted_word_freq
+#top_words
+head(sorted_word_freq,9)
+```
+
+Fatigue is the most frequent sign and symptom recorded from the patients. This could easily be viewed from the bar plot of the frequency of terms as shown in  Figure \@ref(fig:barplot) 
+
+```{r barplot, fig.cap="Bar plot"}
+# Plot a bar chart of word frequencies
+barplot(top_words, las = 2, col = "lightblue", main = "Top Most Frequent Words", xlab = "Words", ylab = "Frequency")
+```
+
+
+Alternatively, we can view it as a word cloud Figure \@ref(fig:wordcloud): 
+
+```{r wordcloud, fig.cap="Word Cloud"}
+wordcloud(names(top_words), freq = top_words, scale=c(3,0.5), min.freq = 1, max.words = 50, random.order = FALSE, colors=brewer.pal(8, "Dark2"))
+```
+
+These pictorials enable us to have a picture of the most common signs and symptoms in the medical institution or region under consideration. This would be instrumental in the distribution of resources and the quantities likely needed in the institution(s) with time. Moreover, the frequencies can be an early indicator of any brewing pandemics. 
+
+## Model formulation
+Now we move on to formulate our topic model, we will build the Latent Dirichlet Allocation (LDA) topic model, for more on the LDA (Blei, Ng, and Jordan 2003).
+
+The formulation of topic models intends to ascertain the proportionate composition of number of topics in the medical reports for each patient. We may adjust parameters to establish suitable variables for our analysis. 
+
+Since LDA is a parameterized model, the number of topics, *k*, we consider is crucial beforehand. The optimal *k* has to be selected because a small *k* results in few abstract topics too complex to understand and too large a *k* results in many repetitive and redundant topics.
+
+### The model
+We note that the dimensions of the dtm has the 50 patients and the 41 unique terms (signs and symptoms)
+```{r}
+dim(dtm)
+```
+It is worth noting that it may happen that after the processing and cleaning of our textual data, some rows or patients are left with no symptoms at all depending on how rigorous the cleaning process was. It is crucial to remove all rows with zero entries, implying no signs and symptoms associated with the patients prior to formulating the model.
+
+```{r}
+sel_idx <- slam::row_sums(dtm) > 0
+dtm <- dtm[sel_idx, ]
+data <- data[sel_idx, ]
+```
+
+### Optimal number of topics, *k*.
+There are many approaches for determining the optimal number of topics to be considered before the model, in our work, we already know the 6 topics, which are the unique diagnoses from the data, these are; TB, HIV, Cancer, Diabetics and Cholera. However, for the sake of exploring our data, we will settle for 5 topics instead. We will only outline a two in one method for determining the optimal *k*, by using the (CaoJuan2009 and Deveaud2014) metrics Murzintcev (n.d.). In our situation we still stick to the CaoJuan2009 and Griffith2004 methods. The optimal *k* would show minimal values for CaoJuan2009 and at the same time, maximum values for Griffith2004.We plot the results as shown in Fig. \@ref(fig:optimalk), ideally, the optimal *k* would have been 2 topics only according to the data using this method followed by 6 topics which is trivial. It must be noted that other methods can still be applied.
+
+```{r optimalk, fig.cap="Optimal K value"}
+# create models with different number of topics
+result <- ldatuning::FindTopicsNumber(
+  dtm,
+  topics = seq(from = 2, to = 20, by = 1),
+  metrics = c("CaoJuan2009",  "Deveaud2014"),
+  method = "Gibbs",
+  control = list(seed = 77),
+  verbose = TRUE
+)
+
+FindTopicsNumber_plot(result)
+```
+
+## The LDA model
+
+For the sake of simplicity, we consider 5 topics *(k=5)* in formulating the LDA (topic model) model. We set a seed in order to obtain the same model each time we run the code. We set 500 iteration since we have minimal data for the purposes of illustrating the concept of topic modelling.  
+
+```{r}
+# number of topics
+#K <- 5
+K<-5
+# set random number generator seed
+set.seed(9161)
+# compute the LDA model, inference via 1000 iterations of Gibbs sampling
+topicModel <- LDA(dtm, K, method="Gibbs", control=list(iter = 500, verbose = 25))
+```
+The (topic) model inference results in two (approximate) posterior probability distributions: a distribution *theta* over *k* topics within each patient and a distribution *beta* over *V* terms (signs and symptoms) within each topic, where *V* represents the length of the vocabulary of the collection *(V = 41)*.
+
+```{r}
+# have a look a some of the results (posterior distributions)
+tmResult <- posterior(topicModel)
+# format of the resulting object
+attributes(tmResult)
+```
+
+```{r}
+ncol(dtm) # lengthOfVocab
+```
+We get to see the dimensions of *beta*, probability distributions of the 5 topics over the entire vocabulary which add to one as expected.  The dimensions of *beta* are 5 topics against each term. The beta probabilities for each topic on the associated terms have been saved in <span style="color:blue">*beta_probabilities.csv*</span>. Consider the probabilities for the 5 topics to five symptoms.
+```{r}
+beta <- tmResult$terms   # get beta from results
+dim(beta)  # K distributions over nTerms(DTM) terms
+#write.csv(beta, file = "beta_probabilities.csv", row.names = FALSE)
+beta[1:5, 1:6]
+```
+For every patient we have a probability distribution of the topics, *theta*. The dimensions of *theta* are 50 patients against each topic. The *theta* probabilities for each patient on the associated topic have been saved in <span style="color:blue">*theta_probabilities.csv*</span>.
+
+Consider the probabilities for the first 5 patients to the five topics, the dominant probability is on topic 4 for the first patient.
+```{r}
+theta <- tmResult$topics 
+dim(theta)               # nDocs(DTM) distributions over K topics
+#rowSums(theta)[1:10]     # rows in theta sum to 1
+#write.csv(theta, file = "theta_probabilities.csv", row.names = FALSE)
+theta[1:3, 1:5]
+```
+The 5 most likely terms within the term probabilities *beta* of the inferred topics (with only the first 5) shown below.
+```{r}
+terms(topicModel, 5)
+exampleTermData <- terms(topicModel, 10)
+#exampleTermData[, 1:3]
+```
+
+Beyond looking into the topics, we visualize the topic distributions for each patient (in this case three randomly selected patients, patients 4, 10, 28). The plot, Fig. \@ref(fig:3patients) shows that the first patient considered (patient 4) has signs and symptoms highly attributed to topic 4. The signs and symptoms of the patient 4, 10 and 28 are as follows:
+
+```{r}
+exampleIds <- c(4, 10, 28)
+#lapply(corpus[exampleIds], as.character) 
+
+#exampleIds <- c(4, 10, 28)
+print(paste0(exampleIds[1], ": ", substr(content(corpus[[exampleIds[1]]]), 0, 400), '...'))
+print(paste0(exampleIds[2], ": ", substr(content(corpus[[exampleIds[2]]]), 0, 400), '...'))
+print(paste0(exampleIds[3], ": ", substr(content(corpus[[exampleIds[3]]]), 0, 400), '...'))
+```
+The probabilities of each patient having the symptoms associated with each topic are shown, patient 4 is most likely to be categorized (or have ailment) in topic 4. 
+```{r}
+##### Alterations
+# Get the number of topics
+num_topics <- ncol(theta)
+num_topics
+# Define topicNames based on the number of topics
+topicNames <- paste("Topic", 1:num_topics)
+topicNames
+# Now proceed with the rest of your code
+# Get topic proportions from example documents
+topicProportionExamples <- theta[exampleIds,]
+topicProportionExamples
+####
+```
+
+```{r 3patients, fig.cap="Three patients' topic probabilities"}
+N <- length(exampleIds)
+# get topic proportions form example documents
+topicProportionExamples <- theta[exampleIds,]
+colnames(topicProportionExamples) <- topicNames
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
+ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+
+In Fig. \@ref(fig:3patients), topic 4 has keywords:
+<span style="color:red">*muscle cramps, diarrhea, weightloss, swollen lymphnodes, low blood pressure*</span>
+highly linked to cholera, it is highly likely that the first patient (patient 4) had cholera.
+
+Taking a look at the LDA model once again, considering the value of alpha=0.2 since we are dealing with limited number of topics, in order to avoid overriding among the topics.
+```{r}
+# see alpha from previous model
+attr(topicModel, "alpha") 
+#The new alpha=0.2
+# set random number generator seed
+set.seed(91)
+topicModel2 <- LDA(dtm, K, method="Gibbs", control=list(iter = 500, verbose = 25, alpha = 0.2))
+
+tmResult <- posterior(topicModel2)
+theta <- tmResult$topics
+beta <- tmResult$terms
+topicNames <- apply(terms(topicModel2, 5), 2, paste, collapse = " ")  # reset topicnames
+```
+### Topic distribution
+The topic distribution within a patient can be controlled with the Alpha-parameter of the model. Higher alpha priors for topics result in an even distribution of topics within a patient. Low alpha priors ensure that the inference process distributes the probability mass on a few topics for each patient.
+We set the alpha prior to a lower value of 0.2 to see how this affects the topic distributions in the model.
+We see the difference in the distribution structure of the topic as visualized below, Fig. \@ref(fig:3patients2):
+
+```{r 3patients2, fig.cap="Selected patients alpha=0.2"}
+#Now visualize the topic distributions in the three patients again. 
+#What are the differences in the distribution structure?
+topicProportionExamples <- theta[exampleIds,]
+colnames(topicProportionExamples) <- topicNames
+vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
+ggplot(data = vizDataFrame, aes(topic, value, fill = document)) + #, ylab = "proportion") + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  coord_flip() +
+  facet_wrap(~ document, ncol = N)
+```
+We express the topics comprising of what each entails;
+```{r}
+# re-rank top topic terms for topic names
+topicNames <- apply(lda::top.topic.words(beta, 5, by.score = T), 2, paste, collapse = " ")
+topicNames
+```
+
+## Topic ranking
+We aspire to obtain a more meaningful order of top signs and symptoms per topic by re-ranking them with a specific score (Chang et al. 2009). The idea of re-ranking terms is identical to the notion of TF-IDF. The least meaningful signs and symptoms in describing a topic are the ones which appear most with high probabilities. This implies that the scoring favours terms to describe a topic.
+
+It is fundamental to identify the dominant topics within the case series (collection of patients’ reports). We will consider two approaches in shaping the topics in a certain way.
+
+### Approach 1
+Sorting topics with respect to their probabilities within the entire list of patients as shown in the output:
+```{r}
+#nrow(dtm) 
+topicProportions <- colSums(theta) / nrow(dtm)  # mean probabilities over all 
+names(topicProportions) <- topicNames     # assign the topic names 
+sort(topicProportions, decreasing = TRUE) # show summed proportions in decreased order  
+```
+or 
+```{r}
+#to 5 decimal places
+soP <- sort(topicProportions, decreasing = TRUE)
+paste(round(soP, 5), ":", names(soP)) 
+```
+We observe that some topics are slightly likely to occur in the corpus than others. This rather describes general thematic coherence. Other topics may correspond more to specific contents.
+
+### Approach 2
+Counting how frequently a topic appears as a primary topic within a patient. The method is also called Rank-1 as shown in the output.
+```{r}
+countsOfPrimaryTopics <- rep(0, K)
+names(countsOfPrimaryTopics) <- topicNames
+for (i in 1:nrow(dtm)) {
+  topicsPerDoc <- theta[i, ] # select topic distribution for document i
+  # get first element position from ordered list
+  primaryTopic <- order(topicsPerDoc, decreasing = TRUE)[1] 
+  countsOfPrimaryTopics[primaryTopic] <- countsOfPrimaryTopics[primaryTopic] + 1
+}
+sort(countsOfPrimaryTopics, decreasing = TRUE)
+```
+or inline
+```{r}
+#inline
+so <- sort(countsOfPrimaryTopics, decreasing = TRUE)
+paste(so, ":", names(so))
+```
+Evidently, sorting topics by the Rank-1 method places topics with rather specific thematic coherences in upper ranks of the list.
+
+Topics sorting can be considered for advanced analysis for example, in the semantic interpretation of topics in a population of patients, time series analysis of the most important topics or the filtering of the original patient population based on specific sub-topics.
+
+## Filtering documents
+Due to the fact that a topic model generates topic probabilities for each patient, it translates to possible use for thematic filtering of a patient population. As a filter, we select only those patients who exceed a certain threshold of their probability value for certain topics (for example, each patient who contains topic *X* which is more than 20 percent).
+```{r}
+##Filtering 
+topicToFilter <- 5  # you can set this manually ...
+# ... or have it selected by a term in the topic name (e.g. 'illness')
+topicToFilter <- grep('sputum', topicNames)[1] 
+topicThreshold <- 0.2
+selectedDocumentIndexes <- which(theta[, topicToFilter] >= topicThreshold)
+filteredCorpus <- corpus[selectedDocumentIndexes]
+# show length of filtered corpus
+filteredCorpus
+```
+Our filtered corpus contains 0 patients related to the specified topic.
+
+## Topic proportions over time
+Finally, we provide a view on the topics in the patients’ records over time. We aggregate mean topic proportions per year of all patients’ sign and symptoms from the year 2010-2020. These aggregated topic proportions can then be visualized, e.g. as a bar plot, Fig.\@ref(fig:timeseriesplot)
+
+```{r timeseriesplot, fig.cap="Time series bar-plot"}
+#data$Year <- paste0(substr(data$Year, 1, 4))
+#View(textdata)
+colnames(data)
+# get mean topic proportions per decade
+topic_proportion_per_year <- aggregate(theta, by = list(year = data$Year), mean)
+# set topic names to aggregated columns
+colnames(topic_proportion_per_year)[2:(K+1)] <- topicNames
+# reshape data frame
+vizDataFrame <- melt(topic_proportion_per_year, id.vars = "year")
+# plot topic proportions per decade as bar plot
+ggplot(vizDataFrame, aes(x=year, y=value, fill=variable)) + 
+  geom_bar(stat = "identity") + ylab("proportion") + 
+  scale_fill_manual(values = paste0(alphabet(20), "FF"), name = "topic")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+It appears the topic (dark purple) on sweats, chills, increased thirst, muscle pain and nausea which could be signs and symptoms of diabetics were on a surge at the beginning and the end of the time frame considered.
+
+## Discussion and Conclusion
+Natural language processing NLP assist in generating visual representations and provide insight into the prevalent signs and symptoms within a medical institution or a specific region. They play a crucial role in resource allocation by helping estimate the required quantities of medical supplies and personnel. Additionally, the observed frequencies serve as potential indicators of emerging pandemics. 
+
+On the other hand, topic modelling is instrumental in determining not only the most prevalent signs and symptoms, but can be expanded to investigate the types of treatment offered to patients, the prognosis associated with the quality of follow up on the patients. In my view, this provides an extremely rare method that can be implemented by biostatisticians in data triangulation and evidence synthesis. Specifically, incorporating qualitative synthesis which involves synthesizing qualitative evidence from open-ended questions, interviews, case reports (which we partially covered in this presentation) to compliment quantitative findings. Qualitative synthesis includes thematic analysis, narrative synthesis and meta-enthography.
+There are more text analysis techniques beneficial to the medical field which include sentiment analysis that can be conducted on patients’ feedback and follow up, and prognosis. Additionally, text classification using supervised machine learning can be conducted to classify patients’ prognosis based on the treatment and follow-ups. 
+
+Various types of models can be developed that can be used for future classification of the state of patients’ prognosis where patients were followed up on based on other previously related cases. The reports can be separated into two sets, the major for training a model and the minor for testing the model. We can develop a prognosis prediction model that is trained from the compiled medical reports meant for the model training (the training set) and these are associated with ailments of concern. The model would then be tested as a way of assessing its performance and we go on to conduct statistical analysis of its accuracy using the test set of the medical reports or other related documentation. Adjustments to improve its performance may be considered if necessary until the model appears satisfactory in making more accurate and reliable predictions on the prognosis of the given types of immune systems bearing the considered ailments. The formulated, tested and validated prognosis model would be easily employed to assist medical practitioners in giving them a second opinion on their own view of the prognosis of the ailments for specified immune systems, and in turn may help in decision making for the benefit of their patients. In short, the model would take in as its input, the history or medical report of patients and be able to predict the prognosis based on the description of their immune system and the ailment(s) from historical experience of other related patients to address public health challenges.
+
+### Limitation
+-limited data for the purposes of rolling an introductory approach to NLP topic modelling,
+
+-data not readily available in some set ups due limited (digitalisation) resources and sensitivity of data
+
+-computationally expensive for massive data, especially at national level.
+
+## References
+Blei, David M., Andrew Y. Ng, and Michael I. Jordan. 2003. “Latent Dirichlet Allocation.” Journal of Machine Learning Research 3 (3): 993–1022.
+
+Murzintcev, Nikita. n.d. “Select Number of Topics for LDA Model.” https://cran.r-project.org/web/packages/ldatuning/vignettes/topics.html.
+
+Chang, Jonathan, Sean Gerrish, Chong Wang, Jordan L. Boyd-graber, and David M. Blei. 2009. “Reading Tea Leaves: How Humans Interpret Topic Models.” In Advances in Neural Information Processing Systems 22, edited by Yoshua Bengio, Dale Schuurmans, John D. Lafferty, Christopher K. Williams, and Aron Culotta, 288–96. Curran. http://papers.nips.cc/paper/3700-reading-tea-leaves-how-humans-interpret-topic-models.pdf.
+
+
+

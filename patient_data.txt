@@ -1,0 +1,51 @@
+Year	Signs and Symptoms	Diagnosis	Treatment	Prognosis	Follow-ups
+2018	Swollen-lymph-nodes	HIV	Counseling and support, Antiretroviral therapy (ART), Preventive medications	Chronic condition with proper treatment	Counseling and support services, Regular viral load tests
+2016	Muscle-cramps, Low-blood-pressure	cholera	Intravenous fluids	Usually resolves with treatment	Rehydration therapy if needed, Monitoring for dehydration
+2020	Fatigue, Fever, Chestpain, Cough that lasts more than three weeks, Nightsweats, Coughing up blood or sputum	tb	Antibiotics, Directly Observed Therapy (DOT), Hospitalization	Risk of spreading to others if not treated	Monitoring for drug side effects, Regular check-ups
+2016	Fatigue, Swollen-lymph-nodes, Diarrhea, Weightloss	HIV	Preventive medications, Antiretroviral therapy (ART)	Can lead to AIDS without treatment	Counseling and support services, Regular viral load tests
+2011	Coughing up blood or sputum, Chestpain, Fatigue, Fever, Nightsweats, Cough that lasts more than three weeks	tb	Hospitalization	Risk of spreading to others if not treated	Monitoring for drug side effects, Regular check-ups
+2013	Changes-in-bowel-bladder-habits, Persistent-cough, Changes-in-moles or warts, Unexplained-weight-loss, Fatigue	cancer	Chemotherapy, Surgery	Prognosis varies depending on cancer type and stage	Follow-up imaging tests, Regular screenings for recurrence
+2015	Coughing up blood or sputum, Fever, Nightsweats, Loss-of-appetite	tb	Hospitalization, Antibiotics	Risk of spreading to others if not treated	Monitoring for drug side effects
+2018	Nightsweats, Fatigue, Loss-of-appetite, Cough that lasts more than three weeks, Coughing up blood or sputum, Fever	tb	Hospitalization	Curable with proper treatment	Regular check-ups, Monitoring for drug side effects
+2015	Sweats, Fever	malaria	Antimalarial medications, Rest	Risk of complications if not treated promptly	Follow-up blood tests, Monitoring for recurrence of symptoms
+2014	Fatigue, Coughing up blood or sputum, Loss-of-appetite, Chestpain, Fever, Nightsweats, Cough that lasts more than three weeks	tb	Hospitalization, Antibiotics	Curable with proper treatment	Regular check-ups
+2015	Muscle-cramps	cholera	Antibiotics, Oral rehydration salts, Intravenous fluids	Risk of severe dehydration and death if not treated	Monitoring for dehydration, Rehydration therapy if needed
+2016	Chills, Fatigue, Sweats, Headache	malaria	Antimalarial medications, Hydration, Rest	Good prognosis with treatment	Follow-up blood tests
+2020	Chestpain, Loss-of-appetite, Fever, Fatigue, Coughing up blood or sputum, Nightsweats	tb	Directly Observed Therapy (DOT), Hospitalization	Curable with proper treatment	Regular check-ups
+2010	Sweats, Fatigue, Headache, Muscle-pain, Chills	malaria	Antimalarial medications, Rest	Good prognosis with treatment	Follow-up blood tests, Monitoring for recurrence of symptoms
+2020	Fatigue, Headache, Nausea and vomiting	malaria	Hydration	Good prognosis with treatment	Monitoring for recurrence of symptoms, Follow-up blood tests
+2019	Persistent-cough, Difficulty-swallowing, Changes-in-moles or warts, Changes-in-bowel-bladder-habits, Lump-mass	cancer	Chemotherapy, Radiation therapy, Surgery	Treatment can improve survival rates	Follow-up imaging tests
+2010	Difficulty-swallowing, Changes-in-moles or warts, Fatigue, Lump-mass, Persistent-cough	cancer	Surgery, Radiation therapy, Chemotherapy	Treatment can improve survival rates	Regular screenings for recurrence
+2020	Muscle-pain, Sweats, Nausea and vomiting	malaria	Antimalarial medications, Hydration	Good prognosis with treatment	Monitoring for recurrence of symptoms, Follow-up blood tests
+2020	Sweats, Fever, Fatigue, Headache, Muscle-pain, Nausea and vomiting, Chills	malaria	Antimalarial medications, Rest, Hydration	Risk of complications if not treated promptly	Follow-up blood tests, Monitoring for recurrence of symptoms
+2012	Changes-in-bowel-bladder-habits, Unexplained-weight-loss, Fatigue	cancer	Surgery, Chemotherapy	Treatment can improve survival rates	Follow-up imaging tests, Regular screenings for recurrence
+2019	Difficulty-swallowing, Changes-in-moles or warts, Changes-in-bowel-bladder-habits, Unexplained-weight-loss, Persistent-cough, Fatigue	cancer	Radiation therapy, Surgery	Prognosis varies depending on cancer type and stage	Follow-up imaging tests, Regular screenings for recurrence
+2015	Loss of skin elasticity, Low-blood-pressure, Thirst, Vomiting, Muscle-cramps	cholera	Oral rehydration salts	Risk of severe dehydration and death if not treated	Monitoring for dehydration, Rehydration therapy if needed
+2012	Weightloss, Diarrhea, Fatigue, Shortness-of-breath	HIV	Preventive medications, Counseling and support	Can lead to AIDS without treatment	Regular viral load tests, Counseling and support services
+2014	Changes-in-bowel-bladder-habits, Persistent-cough	cancer	Chemotherapy	Prognosis varies depending on cancer type and stage	Regular screenings for recurrence, Follow-up imaging tests
+2015	Increased-thirst, Slow-healing-sores or infections, Unexplained-weight-loss, Frequent-urination	diabetes	Dietary changes	Manageable condition with proper care	Regular blood sugar monitoring, Follow-up appointments with healthcare provider
+2020	Fatigue, Slow-healing-sores or infections, Frequent-urination, Unexplained-weight-loss, Blurred-vision, Increased-thirst	diabetes	Insulin therapy, Oral medications	Risk of complications if blood sugar is not controlled	Regular blood sugar monitoring, Follow-up appointments with healthcare provider
+2020	Unexplained-weight-loss, Increased-thirst, Frequent-urination	diabetes	Insulin therapy, Dietary changes, Oral medications	Risk of complications if blood sugar is not controlled	Follow-up appointments with healthcare provider
+2015	Fatigue	diabetes	Dietary changes, Insulin therapy	Manageable condition with proper care	Regular blood sugar monitoring
+2013	Slow-healing-sores or infections, Blurred-vision, Increased-thirst, Unexplained-weight-loss	diabetes	Oral medications, Insulin therapy	Risk of complications if blood sugar is not controlled	Regular blood sugar monitoring, Follow-up appointments with healthcare provider
+2011	Fever, Fatigue, Headache, Chills, Nausea and vomiting, Sweats	malaria	Antimalarial medications, Rest	Good prognosis with treatment	Follow-up blood tests
+2020	Headache, Fever, Nausea and vomiting, Sweats, Fatigue, Chills, Muscle-pain	malaria	Hydration, Antimalarial medications, Rest	Risk of complications if not treated promptly	Follow-up blood tests
+2013	Coughing up blood or sputum, Cough that lasts more than three weeks, Loss-of-appetite, Fever, Fatigue, Chestpain	tb	Directly Observed Therapy (DOT), Hospitalization	Curable with proper treatment	Regular check-ups
+2015	Weightloss, Shortness-of-breath, Fever, Cough, Fatigue, Diarrhea	HIV	Preventive medications	Chronic condition with proper treatment	Counseling and support services, Regular viral load tests
+2018	Fever, Chills, Muscle-pain	malaria	Rest	Good prognosis with treatment	Follow-up blood tests
+2011	Diarrhea, Weightloss, Cough, Fatigue, Fever, Swollen-lymph-nodes	HIV	Counseling and support, Antiretroviral therapy (ART), Preventive medications	Chronic condition with proper treatment	Counseling and support services, Regular viral load tests
+2019	Rapid-heart-rate, Low-blood-pressure, Diarrhea, Loss of skin elasticity, Muscle-cramps, Vomiting	cholera	Oral rehydration salts, Antibiotics	Risk of severe dehydration and death if not treated	Monitoring for dehydration, Rehydration therapy if needed
+2020	Vomiting, Muscle-cramps	cholera	Oral rehydration salts, Intravenous fluids	Risk of severe dehydration and death if not treated	Monitoring for dehydration
+2016	Loss-of-appetite, Fever	tb	Antibiotics	Curable with proper treatment	Regular check-ups, Monitoring for drug side effects
+2016	Difficulty-swallowing, Fatigue, Lump-mass, Changes-in-moles or warts	cancer	Chemotherapy	Prognosis varies depending on cancer type and stage	Regular screenings for recurrence, Follow-up imaging tests
+2019	Persistent-cough	cancer	Surgery, Chemotherapy	Treatment can improve survival rates	Regular screenings for recurrence
+2019	Difficulty-swallowing, Changes-in-moles or warts, Changes-in-bowel-bladder-habits, Unexplained-weight-loss, Persistent-cough, Lump-mass	cancer	Radiation therapy	Treatment can improve survival rates	Regular screenings for recurrence, Follow-up imaging tests
+2010	Frequent-urination, Increased-thirst, Slow-healing-sores or infections, Fatigue, Unexplained-weight-loss, Blurred-vision	diabetes	Dietary changes, Oral medications, Insulin therapy	Risk of complications if blood sugar is not controlled	Regular blood sugar monitoring, Follow-up appointments with healthcare provider
+2019	Unexplained-weight-loss	cancer	Radiation therapy	Prognosis varies depending on cancer type and stage	Follow-up imaging tests, Regular screenings for recurrence
+2019	Chestpain, Fever	tb	Antibiotics, Hospitalization, Directly Observed Therapy (DOT)	Curable with proper treatment	Monitoring for drug side effects
+2015	Fever, Fatigue	tb	Hospitalization	Curable with proper treatment	Regular check-ups, Monitoring for drug side effects
+2013	Weightloss, Swollen-lymph-nodes, Fatigue, Cough	HIV	Preventive medications, Antiretroviral therapy (ART)	Can lead to AIDS without treatment	Counseling and support services
+2011	Vomiting, Rapid-heart-rate, Muscle-cramps	cholera	Intravenous fluids, Oral rehydration salts	Usually resolves with treatment	Rehydration therapy if needed, Monitoring for dehydration
+2019	Lump-mass, Changes-in-bowel-bladder-habits, Unexplained-weight-loss, Changes-in-moles or warts, Difficulty-swallowing, Persistent-cough, Fatigue	cancer	Chemotherapy	Treatment can improve survival rates	Follow-up imaging tests, Regular screenings for recurrence
+2012	Cough	HIV	Counseling and support	Can lead to AIDS without treatment	Counseling and support services, Regular viral load tests
+2015	Increased-thirst, Frequent-urination	diabetes	Dietary changes	Risk of complications if blood sugar is not controlled	Regular blood sugar monitoring
