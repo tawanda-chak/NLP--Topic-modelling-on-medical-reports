@@ -18,10 +18,10 @@ We perform pre-processing of the textual data by:
 -removing numbers and
 -tokenization.
 
-## Generation of pictorials
+## Data exploration
 There was a generation of pictorials that enable us to have a picture of the most common signs and symptoms in the medical institution or region under consideration. This would be instrumental in the distribution of resources and the quantities likely needed in the institution(s) with time. Moreover, the frequencies can be an early indicator of any brewing pandemics.
 
-### Model formulation
+## Model formulation
 we built the Latent Dirichlet Allocation (LDA) topic model from the medical records data of patients signs and symptoms and ascertained the optimal number of topics for the data. Topic distributions for each patient and the sign/symptoms distributions on the topics were calculated and analysed, the *beta* and *theta* probabilities respectively.
 
 Finally, we discuss the findings and provide a brief future course of action.
