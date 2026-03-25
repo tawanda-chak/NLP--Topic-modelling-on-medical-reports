@@ -26,7 +26,25 @@ we built the Latent Dirichlet Allocation (LDA) topic model from the medical reco
 
 Finally, we discuss the findings and provide a brief future course of action.
 
+## Files
+### Data
+*patient_data.txt*
 
+*patient_data.csv*
+
+### Code
+*data_processing.R*
+
+*topic_modelling_medical-reports.Rmd*
+
+*topic_modelling_medical-reports.html*
+
+### Model output
+*beta_probabilities.csv*
+*theta_probabilities.csv*
+
+## Author
+Tawanda Gallan Chakuvinga
 
 
 
