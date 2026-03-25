@@ -2,7 +2,7 @@
 title: "Introduction to Topic Modelling on medical reports"
 author: "Tawanda Gallan Chakuvinga"
 date: "2026-03-21"
-output: bookdown::html_document2
+output: bookdown::pdf_document2
 ---
 
 ```{r setup, include=FALSE}
@@ -10,18 +10,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Introduction
+# Introduction
 This work aims to provide an introductory concept of Topic modelling a branch of Natural Language Processing (NLP) in the medical field. Topic modelling also known as the unsupervised machine learning (UML) is a way of establishing trends, patterns in the text such that topics can be drawn from the textual data. We advance the mining of data in an under-researched field by means of exploring rich data (text) encountered in public health which may be readily accessible and analyzable by various stakeholders. 
 
 However, in this study, we will make use of AI generated medical health reports for very limited patients for the purposes of rolling out the introduction to topic modelling.
 
-### Study objectives
+## Study objectives
 Firstly, AI generation and compilation of structured and unstructured data (text) from case (medical) reports from a given time frame that can be incorporated into a text or csv file to handle diverse datasets and easily accessible for data and text analysis by epidemiologists, public health researchers, and biostatisticians with expertise in the concerned fields, data science, quantitative, and computational skills personnel. These files consist of six columns, for each patient (a row); the year, signs and symptoms, diagnosis, treatment, prognosis and follow-ups made.
 
 Secondly, to carry out Natural Language Processing (NLP) to perform topic modelling in order to observe the most prevalent signs and symptoms, diagnosis, treatment, prognosis and follow-ups in the health institution(s) of the given region. 
 
 
-## Text preprocessing
+# Text preprocessing
 We commence by loading our data compiled in the text file titled: <span style="color:blue">*patient_data.txt*</span> in R studio. A snapshot of the data is as seen in Figure \@ref(fig:snapshot).
 
 
@@ -45,7 +45,7 @@ Below is the summary of the data we are working with
 summary(data)
 ```
 
-### Packages
+## Packages
 For simplicity, we are going to focus on the "signs and symptoms" column for each patient (row). We are going to perform topic modelling only on this column. Let's start by loading necessary packages:
 
 ```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
@@ -76,7 +76,7 @@ library(dplyr)
 
 To learn more, see [Available packages by name](https://cran.r-project.org/web/packages/available_packages_by_name.html) and [how to install R packages](https://cran.r-project.org/) on the application and installation of the packages.
 
-### The corpus
+## The corpus
 In a text mining context, a corpus is plural of corpora which is a large, structured, and machine-readable collection of texts, audios or videos used for analysis.
 We move on to load our data into a corpus for the column Signs and Symptoms:
 
@@ -130,7 +130,7 @@ The dtm has 50 rows (patients) ad 41 different terms (signs and symptoms) choppe
 dtm
 ```
 
-#### Preprocessed data
+### Preprocessed data
 
 Consider the dtm comprising of pre-processed signs and symptoms for the first 5 patients in Figure \@ref(fig:screenshot2). 
 
@@ -183,14 +183,14 @@ wordcloud(names(top_words), freq = top_words, scale=c(3,0.5), min.freq = 1, max.
 
 These pictorials enable us to have a picture of the most common signs and symptoms in the medical institution or region under consideration. This would be instrumental in the distribution of resources and the quantities likely needed in the institution(s) with time. Moreover, the frequencies can be an early indicator of any brewing pandemics. 
 
-## Model formulation
+# Model formulation
 Now we move on to formulate our topic model, we will build the Latent Dirichlet Allocation (LDA) topic model, for more on the LDA (Blei, Ng, and Jordan 2003).
 
 The formulation of topic models intends to ascertain the proportionate composition of number of topics in the medical reports for each patient. We may adjust parameters to establish suitable variables for our analysis. 
 
 Since LDA is a parameterized model, the number of topics, *k*, we consider is crucial beforehand. The optimal *k* has to be selected because a small *k* results in few abstract topics too complex to understand and too large a *k* results in many repetitive and redundant topics.
 
-### The model
+## The model
 We note that the dimensions of the dtm has the 50 patients and the 41 unique terms (signs and symptoms)
 ```{r}
 dim(dtm)
@@ -203,7 +203,7 @@ dtm <- dtm[sel_idx, ]
 data <- data[sel_idx, ]
 ```
 
-### Optimal number of topics, *k*.
+## Optimal number of topics, *k*.
 There are many approaches for determining the optimal number of topics to be considered before the model, in our work, we already know the 6 topics, which are the unique diagnoses from the data, these are; TB, HIV, Cancer, Diabetics and Cholera. However, for the sake of exploring our data, we will settle for 5 topics instead. We will only outline a two in one method for determining the optimal *k*, by using the (CaoJuan2009 and Deveaud2014) metrics Murzintcev (n.d.). In our situation we still stick to the CaoJuan2009 and Griffith2004 methods. The optimal *k* would show minimal values for CaoJuan2009 and at the same time, maximum values for Griffith2004.We plot the results as shown in Fig. \@ref(fig:optimalk), ideally, the optimal *k* would have been 2 topics only according to the data using this method followed by 6 topics which is trivial. It must be noted that other methods can still be applied.
 
 ```{r optimalk, fig.cap="Optimal K value"}
@@ -220,7 +220,7 @@ result <- ldatuning::FindTopicsNumber(
 FindTopicsNumber_plot(result)
 ```
 
-## The LDA model
+# The LDA model
 
 For the sake of simplicity, we consider 5 topics *(k=5)* in formulating the LDA (topic model) model. We set a seed in order to obtain the same model each time we run the code. We set 500 iteration since we have minimal data for the purposes of illustrating the concept of topic modelling.  
 
@@ -327,20 +327,23 @@ theta <- tmResult$topics
 beta <- tmResult$terms
 topicNames <- apply(terms(topicModel2, 5), 2, paste, collapse = " ")  # reset topicnames
 ```
-### Topic distribution
+## Topic distribution
 The topic distribution within a patient can be controlled with the Alpha-parameter of the model. Higher alpha priors for topics result in an even distribution of topics within a patient. Low alpha priors ensure that the inference process distributes the probability mass on a few topics for each patient.
 We set the alpha prior to a lower value of 0.2 to see how this affects the topic distributions in the model.
 We see the difference in the distribution structure of the topic as visualized below, Fig. \@ref(fig:3patients2):
-
-```{r 3patients2, fig.cap="Selected patients alpha=0.2"}
+```{r}
 #Now visualize the topic distributions in the three patients again. 
 #What are the differences in the distribution structure?
 topicProportionExamples <- theta[exampleIds,]
 colnames(topicProportionExamples) <- topicNames
+```
+
+```{r 3patients2, out.extra='angle=90', fig.cap="Selected patients alpha=0.2"}
 vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
 ggplot(data = vizDataFrame, aes(topic, value, fill = document)) + #, ylab = "proportion") + 
   geom_bar(stat="identity") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "bottom") +  
   coord_flip() +
   facet_wrap(~ document, ncol = N)
 ```
@@ -395,7 +398,7 @@ Evidently, sorting topics by the Rank-1 method places topics with rather specifi
 
 Topics sorting can be considered for advanced analysis for example, in the semantic interpretation of topics in a population of patients, time series analysis of the most important topics or the filtering of the original patient population based on specific sub-topics.
 
-## Filtering documents
+## Filtering topics
 Due to the fact that a topic model generates topic probabilities for each patient, it translates to possible use for thematic filtering of a patient population. As a filter, we select only those patients who exceed a certain threshold of their probability value for certain topics (for example, each patient who contains topic *X* which is more than 20 percent).
 ```{r}
 ##Filtering 
@@ -413,7 +416,7 @@ Our filtered corpus contains 0 patients related to the specified topic.
 ## Topic proportions over time
 Finally, we provide a view on the topics in the patients’ records over time. We aggregate mean topic proportions per year of all patients’ sign and symptoms from the year 2010-2020. These aggregated topic proportions can then be visualized, e.g. as a bar plot, Fig.\@ref(fig:timeseriesplot)
 
-```{r timeseriesplot, fig.cap="Time series bar-plot"}
+```{r timeseriesplot, out.extra='angle=90', fig.cap="Time series bar-plot"}
 #data$Year <- paste0(substr(data$Year, 1, 4))
 #View(textdata)
 colnames(data)
@@ -427,11 +430,12 @@ vizDataFrame <- melt(topic_proportion_per_year, id.vars = "year")
 ggplot(vizDataFrame, aes(x=year, y=value, fill=variable)) + 
   geom_bar(stat = "identity") + ylab("proportion") + 
   scale_fill_manual(values = paste0(alphabet(20), "FF"), name = "topic")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+    legend.position = "bottom")
 ```
-It appears the topic (dark purple) on sweats, chills, increased thirst, muscle pain and nausea which could be signs and symptoms of diabetics were on a surge at the beginning and the end of the time frame considered.
+It appears the topic on "sweats, chills, increased thirst, muscle pain and nausea" which could be signs and symptoms of diabetics were on a surge at the beginning and the end of the time frame considered.
 
-## Discussion and Conclusion
+# Discussion and Conclusion
 Natural language processing NLP assist in generating visual representations and provide insight into the prevalent signs and symptoms within a medical institution or a specific region. They play a crucial role in resource allocation by helping estimate the required quantities of medical supplies and personnel. Additionally, the observed frequencies serve as potential indicators of emerging pandemics. 
 
 On the other hand, topic modelling is instrumental in determining not only the most prevalent signs and symptoms, but can be expanded to investigate the types of treatment offered to patients, the prognosis associated with the quality of follow up on the patients. In my view, this provides an extremely rare method that can be implemented by biostatisticians in data triangulation and evidence synthesis. Specifically, incorporating qualitative synthesis which involves synthesizing qualitative evidence from open-ended questions, interviews, case reports (which we partially covered in this presentation) to compliment quantitative findings. Qualitative synthesis includes thematic analysis, narrative synthesis and meta-enthography.
@@ -439,14 +443,14 @@ There are more text analysis techniques beneficial to the medical field which in
 
 Various types of models can be developed that can be used for future classification of the state of patients’ prognosis where patients were followed up on based on other previously related cases. The reports can be separated into two sets, the major for training a model and the minor for testing the model. We can develop a prognosis prediction model that is trained from the compiled medical reports meant for the model training (the training set) and these are associated with ailments of concern. The model would then be tested as a way of assessing its performance and we go on to conduct statistical analysis of its accuracy using the test set of the medical reports or other related documentation. Adjustments to improve its performance may be considered if necessary until the model appears satisfactory in making more accurate and reliable predictions on the prognosis of the given types of immune systems bearing the considered ailments. The formulated, tested and validated prognosis model would be easily employed to assist medical practitioners in giving them a second opinion on their own view of the prognosis of the ailments for specified immune systems, and in turn may help in decision making for the benefit of their patients. In short, the model would take in as its input, the history or medical report of patients and be able to predict the prognosis based on the description of their immune system and the ailment(s) from historical experience of other related patients to address public health challenges.
 
-### Limitation
+## Limitation
 -limited data for the purposes of rolling an introductory approach to NLP topic modelling,
 
 -data not readily available in some set ups due limited (digitalisation) resources and sensitivity of data
 
 -computationally expensive for massive data, especially at national level.
 
-## References
+# References
 Blei, David M., Andrew Y. Ng, and Michael I. Jordan. 2003. “Latent Dirichlet Allocation.” Journal of Machine Learning Research 3 (3): 993–1022.
 
 Murzintcev, Nikita. n.d. “Select Number of Topics for LDA Model.” https://cran.r-project.org/web/packages/ldatuning/vignettes/topics.html.
