@@ -1,14 +1,16 @@
 ---
 title: "Introduction to Topic Modelling on medical reports"
 author: "Tawanda Gallan Chakuvinga"
-date: "2026-03-21"
 output: bookdown::pdf_document2
+header-includes:
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+colorlinks: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 # Introduction
 This work aims to provide an introductory concept of Topic modelling a branch of Natural Language Processing (NLP) in the medical field. Topic modelling also known as the unsupervised machine learning (UML) is a way of establishing trends, patterns in the text such that topics can be drawn from the textual data. We advance the mining of data in an under-researched field by means of exploring rich data (text) encountered in public health which may be readily accessible and analyzable by various stakeholders. 
@@ -22,7 +24,7 @@ Secondly, to carry out Natural Language Processing (NLP) to perform topic modell
 
 
 # Text preprocessing
-We commence by loading our data compiled in the text file titled: <span style="color:blue">*patient_data.txt*</span> in R studio. A snapshot of the data is as seen in Figure \@ref(fig:snapshot).
+We commence by loading our data compiled in the text file titled: \textcolor{red}{\textit{patient\_data.txt}} in R studio. A snapshot of the data is as seen in Figure \@ref(fig:snapshot).
 
 
 ```{r}
@@ -37,7 +39,9 @@ View(data)
 knitr::include_graphics("C:/Users/tchak/OneDrive/Documents/2026/R projects/screenshot1.png")
 ```
 
-**Note**: The full text pre-processing code is covered in <span style="color:blue">*data_preprocessing.R*</span> and the data is in <span style="color:blue">*patient_data.txt*</span> and/ or <span style="color:blue">*patient_data.csv*</span>.
+
+**Note**: The full text pre-processing code is covered in \textcolor{red}{\textit{data\_preprocessing.R}} and the data is in \textcolor{red}{\textit{patient\_data.txt}} and/ or \textcolor{red}{\textit{patient\_data.csv}}.
+
 
 Below is the summary of the data we are working with
 
@@ -46,7 +50,7 @@ summary(data)
 ```
 
 ## Packages
-For simplicity, we are going to focus on the "signs and symptoms" column for each patient (row). We are going to perform topic modelling only on this column. Let's start by loading necessary packages:
+For simplicity, we are going to focus on the \textcolor{blue}{\textit{signs and symptoms}} column for each patient (row). We are going to perform topic modelling only on this column. Let's start by loading necessary packages:
 
 ```{r, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
 # install packages first 
@@ -72,6 +76,7 @@ library(quanteda)
 library(textstem)
 library(stringr)
 library(dplyr)
+library(reshape2)
 ```
 
 To learn more, see [Available packages by name](https://cran.r-project.org/web/packages/available_packages_by_name.html) and [how to install R packages](https://cran.r-project.org/) on the application and installation of the packages.
@@ -177,7 +182,7 @@ barplot(top_words, las = 2, col = "lightblue", main = "Top Most Frequent Words",
 
 Alternatively, we can view it as a word cloud Figure \@ref(fig:wordcloud): 
 
-```{r wordcloud, fig.cap="Word Cloud"}
+```{r wordcloud, fig.cap="Word Cloud", out.width='60%', dpi=120}
 wordcloud(names(top_words), freq = top_words, scale=c(3,0.5), min.freq = 1, max.words = 50, random.order = FALSE, colors=brewer.pal(8, "Dark2"))
 ```
 
@@ -245,14 +250,14 @@ attributes(tmResult)
 ```{r}
 ncol(dtm) # lengthOfVocab
 ```
-We get to see the dimensions of *beta*, probability distributions of the 5 topics over the entire vocabulary which add to one as expected.  The dimensions of *beta* are 5 topics against each term. The beta probabilities for each topic on the associated terms have been saved in <span style="color:blue">*beta_probabilities.csv*</span>. Consider the probabilities for the 5 topics to five symptoms.
+We get to see the dimensions of *beta*, probability distributions of the 5 topics over the entire vocabulary which add to one as expected.  The dimensions of *beta* are 5 topics against each term. The beta probabilities for each topic on the associated terms have been saved in \textcolor{red}{\textit{beta\_probabilities.csv}}. Consider the probabilities for the 5 topics to five symptoms.
 ```{r}
 beta <- tmResult$terms   # get beta from results
 dim(beta)  # K distributions over nTerms(DTM) terms
 #write.csv(beta, file = "beta_probabilities.csv", row.names = FALSE)
 beta[1:5, 1:6]
 ```
-For every patient we have a probability distribution of the topics, *theta*. The dimensions of *theta* are 50 patients against each topic. The *theta* probabilities for each patient on the associated topic have been saved in <span style="color:blue">*theta_probabilities.csv*</span>.
+For every patient we have a probability distribution of the topics, *theta*. The dimensions of *theta* are 50 patients against each topic. The *theta* probabilities for each patient on the associated topic have been saved in \textcolor{red}{\textit{theta\_probabilities.csv}}.
 
 Consider the probabilities for the first 5 patients to the five topics, the dominant probability is on topic 4 for the first patient.
 ```{r}
@@ -298,11 +303,10 @@ topicProportionExamples
 
 ```{r 3patients, fig.cap="Three patients' topic probabilities"}
 N <- length(exampleIds)
-# get topic proportions form example documents
 topicProportionExamples <- theta[exampleIds,]
 colnames(topicProportionExamples) <- topicNames
 vizDataFrame <- melt(cbind(data.frame(topicProportionExamples), document = factor(1:N)), variable.name = "topic", id.vars = "document")  
-ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proportion") + 
+ggplot(data = vizDataFrame, aes(topic, value, fill = document)) + #, ylab = "proportion") + 
   geom_bar(stat="identity") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  
   coord_flip() +
@@ -310,8 +314,9 @@ ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proporti
 ```
 
 In Fig. \@ref(fig:3patients), topic 4 has keywords:
-<span style="color:red">*muscle cramps, diarrhea, weightloss, swollen lymphnodes, low blood pressure*</span>
-highly linked to cholera, it is highly likely that the first patient (patient 4) had cholera.
+\textcolor{blue}{\textit{muscle cramps, diarrhea, weightloss, swollen lymphnodes, low blood pressure}} 
+
+highly linked to cholera. Chances are high that the first patient (patient 4) had cholera.
 
 Taking a look at the LDA model once again, considering the value of alpha=0.2 since we are dealing with limited number of topics, in order to avoid overriding among the topics.
 ```{r}
@@ -414,7 +419,7 @@ filteredCorpus
 Our filtered corpus contains 0 patients related to the specified topic.
 
 ## Topic proportions over time
-Finally, we provide a view on the topics in the patients’ records over time. We aggregate mean topic proportions per year of all patients’ sign and symptoms from the year 2010-2020. These aggregated topic proportions can then be visualized, e.g. as a bar plot, Fig.\@ref(fig:timeseriesplot)
+Finally, we provide a view on the topics in the patients’ records over time. Mean topic proportions per year of all patients’ sign and symptoms from the year 2010-2020 were We aggregated. These aggregated topic proportions can then be visualized, e.g. as a bar plot, Fig.\@ref(fig:timeseriesplot)
 
 ```{r timeseriesplot, out.extra='angle=90', fig.cap="Time series bar-plot"}
 #data$Year <- paste0(substr(data$Year, 1, 4))
@@ -428,12 +433,15 @@ colnames(topic_proportion_per_year)[2:(K+1)] <- topicNames
 vizDataFrame <- melt(topic_proportion_per_year, id.vars = "year")
 # plot topic proportions per decade as bar plot
 ggplot(vizDataFrame, aes(x=year, y=value, fill=variable)) + 
-  geom_bar(stat = "identity") + ylab("proportion") + 
+  geom_bar(stat = "identity") + 
+  ylab("proportion") + 
+  # This line forces integer breaks
+  scale_x_continuous(breaks = function(x) seq(floor(min(x)), ceiling(max(x)), by = 1)) +
   scale_fill_manual(values = paste0(alphabet(20), "FF"), name = "topic")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
     legend.position = "bottom")
 ```
-It appears the topic on "sweats, chills, increased thirst, muscle pain and nausea" which could be signs and symptoms of diabetics were on a surge at the beginning and the end of the time frame considered.
+It appears the topic on \textcolor{blue}{\textit{sweats, chills, increased thirst, muscle pain and nausea}}  which could be signs and symptoms of diabetics were on a surge at the beginning and the end of the time frame considered. There were no patients suffering from the five diseases of concern visiting the institution in 2017. 
 
 # Discussion and Conclusion
 Natural language processing NLP assist in generating visual representations and provide insight into the prevalent signs and symptoms within a medical institution or a specific region. They play a crucial role in resource allocation by helping estimate the required quantities of medical supplies and personnel. Additionally, the observed frequencies serve as potential indicators of emerging pandemics. 
@@ -443,14 +451,14 @@ There are more text analysis techniques beneficial to the medical field which in
 
 Various types of models can be developed that can be used for future classification of the state of patients’ prognosis where patients were followed up on based on other previously related cases. The reports can be separated into two sets, the major for training a model and the minor for testing the model. We can develop a prognosis prediction model that is trained from the compiled medical reports meant for the model training (the training set) and these are associated with ailments of concern. The model would then be tested as a way of assessing its performance and we go on to conduct statistical analysis of its accuracy using the test set of the medical reports or other related documentation. Adjustments to improve its performance may be considered if necessary until the model appears satisfactory in making more accurate and reliable predictions on the prognosis of the given types of immune systems bearing the considered ailments. The formulated, tested and validated prognosis model would be easily employed to assist medical practitioners in giving them a second opinion on their own view of the prognosis of the ailments for specified immune systems, and in turn may help in decision making for the benefit of their patients. In short, the model would take in as its input, the history or medical report of patients and be able to predict the prognosis based on the description of their immune system and the ailment(s) from historical experience of other related patients to address public health challenges.
 
-## Limitation
+## Limitations
 -limited data for the purposes of rolling an introductory approach to NLP topic modelling,
 
 -data not readily available in some set ups due limited (digitalisation) resources and sensitivity of data
 
 -computationally expensive for massive data, especially at national level.
 
-# References
+# References {-}
 Blei, David M., Andrew Y. Ng, and Michael I. Jordan. 2003. “Latent Dirichlet Allocation.” Journal of Machine Learning Research 3 (3): 993–1022.
 
 Murzintcev, Nikita. n.d. “Select Number of Topics for LDA Model.” https://cran.r-project.org/web/packages/ldatuning/vignettes/topics.html.
